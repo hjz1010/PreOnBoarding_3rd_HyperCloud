@@ -1,5 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { User } from "src/users/uer.entity";
+import { User } from "src/users/user.entity";
 
 
 export const typeORMconfig : TypeOrmModuleOptions = {
