@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { Posting } from "src/postings/posting.entity";
 import { User } from "src/users/user.entity";
 
 
@@ -10,6 +11,6 @@ export const typeORMconfig : TypeOrmModuleOptions = {
         "username": "root",
         "password": "password1!",
         "database": "hyper_cloud",
-        "entities": [User], 
+        "entities": [User, Posting], 
         "synchronize": true 
 }
