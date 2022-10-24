@@ -18,7 +18,6 @@ import { PostingsService } from './postings.service';
     TypeOrmModule.forFeature([Posting]),
   ],
   controllers: [PostingsController],
-  providers: [PostingsService], //JwtStrategy
-  // exports: [JwtStrategy, PassportModule]
+  providers: [PostingsService], 
 })
 export class PostingsModule {}
