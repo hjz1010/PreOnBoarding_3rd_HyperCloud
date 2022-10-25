@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Posting } from './posting.entity';
-import { PostingsController } from './postings.controller';
-import { PostingsService } from './postings.service';
+import { Comment, Posting } from './posting.entity';
+import { CommentsController, PostingsController } from './postings.controller';
+import { commentsService, PostingsService } from './postings.service';
 
 @Module({
   imports: [ 
@@ -15,9 +15,9 @@ import { PostingsService } from './postings.service';
         expiresIn: 60*60
       }
     }),
-    TypeOrmModule.forFeature([Posting]),
+    TypeOrmModule.forFeature([Posting, Comment]),
   ],
-  controllers: [PostingsController],
-  providers: [PostingsService], 
+  controllers: [PostingsController, CommentsController],
+  providers: [PostingsService, commentsService], 
 })
 export class PostingsModule {}

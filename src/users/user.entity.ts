@@ -1,4 +1,4 @@
-import { Posting } from "src/postings/posting.entity";
+import { Comment, Posting } from "src/postings/posting.entity";
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -14,4 +14,7 @@ export class User extends BaseEntity {
 
     @OneToMany(type=> Posting, posting => posting.user)
     postings: Posting[]
+
+    @OneToMany(type => Comment, comment => comment.user)
+    comments: Comment[]
 }
