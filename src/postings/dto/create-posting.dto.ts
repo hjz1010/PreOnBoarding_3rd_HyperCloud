@@ -5,3 +5,9 @@ export class CreatePostingDto {
     @MaxLength(100)
     content: string;
 }
+
+export class CreateCommentDto {
+    @IsNotEmpty()
+    @MaxLength(20)
+    text: string;
+}

@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
-import { Posting } from './posting.entity';
-import { PostingRepository } from './posting.repository';
+import { Comment, Posting } from './posting.entity';
+import { CommentRepository, PostingRepository } from './posting.repository';
 
 @Injectable()
 export class PostingsService {
@@ -49,4 +49,27 @@ export class PostingsService {
 
         return Object.assign({message: 'DELETE SUCCESS'})
     }   
+}
+
+@Injectable()
+export class commentsService {
+    constructor(
+        @InjectRepository(Comment)
+        private commentRepository: CommentRepository,
+
+        @InjectRepository(Posting)
+        private postingRepository: PostingRepository,
+    ) {}
+
+    async createComment(text: string, posting_id: string, user: User): Promise<Comment> {
+        const posting = await this.postingRepository.findOne({where : {id: posting_id}})
+
+        const comment = this.commentRepository.create({
+            text,
+            posting,
+            user
+        })
+        await this.commentRepository.save(comment)
+        return comment
+    }
 }
