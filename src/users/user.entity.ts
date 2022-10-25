@@ -1,4 +1,4 @@
-import { Comment, Posting } from "src/postings/posting.entity";
+import { Comment, Like, Posting } from "src/postings/posting.entity";
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -13,8 +13,11 @@ export class User extends BaseEntity {
     password: string;
 
     @OneToMany(type=> Posting, posting => posting.user)
-    postings: Posting[]
+    postings: Posting[];
 
     @OneToMany(type => Comment, comment => comment.user)
-    comments: Comment[]
+    comments: Comment[];
+
+    @OneToMany(type => Like, like => like.user)
+    likes: Like[];
 }

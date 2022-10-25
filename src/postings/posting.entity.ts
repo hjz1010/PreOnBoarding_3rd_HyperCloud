@@ -13,7 +13,10 @@ export class Posting extends BaseEntity {
     user: User;
 
     @OneToMany(type => Comment, comment => comment.posting, { eager: true } )
-    comments: Comment[]
+    comments: Comment[];
+
+    @OneToMany(type => Like, like => like.user, { eager: true } )
+    likes: Like[];
 }
 
 @Entity()
@@ -28,5 +31,17 @@ export class Comment extends BaseEntity {
     posting: Posting;
 
     @ManyToOne(type => User, user => user.comments, { eager: true } )
+    user: User;
+}
+
+@Entity()
+export class Like extends BaseEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @ManyToOne(type => Posting, posting => posting.likes)
+    posting: Posting;
+
+    @ManyToOne(type => User, user => user.likes)
     user: User;
 }
