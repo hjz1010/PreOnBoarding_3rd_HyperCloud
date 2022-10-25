@@ -6,14 +6,17 @@ import { JwtStrategy } from "./jwt.strategy";
 import { User } from "./user.entity";
 import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
+import * as config from 'config';
+
+const jwtConfig = config.get('jwt')
 
 @Module({
     imports: [ 
       PassportModule.register({ defaultStrategy: 'jwt'}),
       JwtModule.register({
-        secret: 'Secret1234',
+        secret: process.env.JWT_SECRET || jwtConfig.secret,
         signOptions: {
-          expiresIn: 60*60
+          expiresIn: jwtConfig.expiresIn
         }
       }),
       TypeOrmModule.forFeature([User]),
