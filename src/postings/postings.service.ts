@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
-import { Comment, Posting } from './posting.entity';
-import { CommentRepository, PostingRepository } from './posting.repository';
+import { Comment, Like, Posting } from './posting.entity';
+import { CommentRepository, likeRepository, PostingRepository } from './posting.repository';
 
 @Injectable()
 export class PostingsService {
@@ -71,5 +71,36 @@ export class commentsService {
         })
         await this.commentRepository.save(comment)
         return comment
+    }
+}
+
+@Injectable()
+export class LikesServices  {
+    constructor(
+        @InjectRepository(Like)
+        private likeRepository: likeRepository,
+
+        @InjectRepository(Posting)
+        private postingRepository: PostingRepository,
+        // private postingService: PostingsService,
+    ) {}
+
+    async createOrDeleteLike(posting_id: string, user: User): Promise<string> {
+        // const posting = await this.postingService.getPostingById(posting_id, user) // 이건 본인 게시글만 가져올 수 있는 메소드라서 안 됨
+        const posting = await this.postingRepository.findOne({where : {id: posting_id}})
+        const like = await this.likeRepository.findOne({where: {posting: posting, user: user}})
+
+        if (!like) {
+            const createLike = this.likeRepository.create({
+                posting,
+                user
+            })
+            await this.likeRepository.save(createLike)
+            return Object.assign({message: 'LIKE SUCCESS'})
+
+        } else {
+            await this.likeRepository.delete(like)
+            return Object.assign({message: 'UNLIKE SUCCESS'})
+        }
     }
 }

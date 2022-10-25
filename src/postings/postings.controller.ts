@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Logger, Param, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateCommentDto, CreatePostingDto } from './dto/create-posting.dto';
-import { Comment, Posting } from './posting.entity';
-import { commentsService, PostingsService } from './postings.service';
+import { Comment, Like, Posting } from './posting.entity';
+import { commentsService, LikesServices, PostingsService } from './postings.service';
 
 
 @Controller('postings')
@@ -70,5 +70,24 @@ export class CommentsController {
         this.logger.verbose(`User ${req.user.email} creating a comment for the posting of #${posting_id}. 
                             Payload: ${JSON.stringify(createCommentDto)}`)
         return this.commentService.createComment(createCommentDto.text, posting_id, req.user)
+    }
+}
+
+@Controller('likes')
+@UsePipes(ValidationPipe)
+@UseGuards(AuthGuard())
+export class LikesController {
+    private logger = new Logger('Like')
+    constructor(
+        private likeService: LikesServices
+    ) {}
+
+    @Post('/:posting_id')
+    async clickLike(
+        @Param('posting_id') posting_id: string,
+        @Req() req
+    ): Promise<string> {
+        this.logger.verbose(`User ${req.user.email} clicking LIKE on the posting of #${posting_id}.`)
+        return this.likeService.createOrDeleteLike(posting_id, req.user)
     }
 }
