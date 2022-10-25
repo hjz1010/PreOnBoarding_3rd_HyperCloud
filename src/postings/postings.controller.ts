@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateCommentDto, CreatePostingDto } from './dto/create-posting.dto';
 import { Comment, Posting } from './posting.entity';
@@ -9,6 +9,7 @@ import { commentsService, PostingsService } from './postings.service';
 @UsePipes(ValidationPipe)
 @UseGuards(AuthGuard())
 export class PostingsController {
+    private logger = new Logger('Posting')
     constructor(private postingService: PostingsService) {}
 
     @Post()
@@ -16,6 +17,8 @@ export class PostingsController {
         @Body() createPosting: CreatePostingDto,
         @Req() req
     ): Promise<Posting> {
+        this.logger.verbose(`User ${req.user.email} creating a new posting.
+                            Payload: ${JSON.stringify(createPosting)}`)
         return this.postingService.createPosting(createPosting.content, req.user)
     } 
 
@@ -23,6 +26,7 @@ export class PostingsController {
     getPosting(
         @Req() req,
     ): Promise<Posting> {
+        this.logger.verbose(`User ${req.user.email} trying to get all postings.`)
         return this.postingService.getAllPostings(req.user)
     }
 
@@ -32,6 +36,8 @@ export class PostingsController {
         @Body() createPosting: CreatePostingDto,
         @Req() req
     ): Promise<Posting> {
+        this.logger.verbose(`User ${req.user.email} trying to update the posting of #${posting_id}.
+                            Payload: ${JSON.stringify(createPosting)} `)
         return this.postingService.updatePosting(posting_id, createPosting.content, req.user)
     }
 
@@ -40,6 +46,7 @@ export class PostingsController {
         @Param('posting_id') posting_id: string,
         @Req() req
     ): Promise <string> {
+        this.logger.verbose(`User ${req.user.email} trying to delete the posting of #${posting_id}.`)
         return this.postingService.deletePosting(posting_id, req.user)
     }
 }
@@ -49,6 +56,7 @@ export class PostingsController {
 @UsePipes(ValidationPipe)
 @UseGuards(AuthGuard())
 export class CommentsController {
+    private logger = new Logger('Comment')
     constructor(
         private commentService: commentsService
     ) {}
@@ -59,6 +67,8 @@ export class CommentsController {
         @Param('posting_id') posting_id: string,
         @Req() req
     ): Promise<Comment> {
+        this.logger.verbose(`User ${req.user.email} creating a comment for the posting of #${posting_id}. 
+                            Payload: ${JSON.stringify(createCommentDto)}`)
         return this.commentService.createComment(createCommentDto.text, posting_id, req.user)
     }
 }
