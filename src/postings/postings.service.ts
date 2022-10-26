@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { Comment, Like, Posting } from './posting.entity';
@@ -64,6 +64,10 @@ export class commentsService {
     async createComment(text: string, posting_id: string, user: User): Promise<Comment> {
         const posting = await this.postingRepository.findOne({where : {id: posting_id}})
 
+        if (!posting) {
+            throw new NotFoundException('존재하지 않는 포스팅입니다.')
+        }
+
         const comment = this.commentRepository.create({
             text,
             posting,
@@ -88,6 +92,11 @@ export class LikesServices  {
     async createOrDeleteLike(posting_id: string, user: User): Promise<string> {
         // const posting = await this.postingService.getPostingById(posting_id, user) // 이건 본인 게시글만 가져올 수 있는 메소드라서 안 됨
         const posting = await this.postingRepository.findOne({where : {id: posting_id}})
+
+        if (!posting) {
+            throw new NotFoundException('존재하지 않는 포스팅입니다.')
+        }
+        
         const like = await this.likeRepository.findOne({where: {posting: posting, user: user}})
 
         if (!like) {
