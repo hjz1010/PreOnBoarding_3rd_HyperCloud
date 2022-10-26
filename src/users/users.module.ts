@@ -1,11 +1,11 @@
-import { Module, Post } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { JwtStrategy } from "./jwt.strategy";
-import { User } from "./user.entity";
-import { UsersController } from "./users.controller";
-import { UsersService } from "./users.service";
+import { Follow, User } from "./user.entity";
+import { FollowsController, UsersController } from "./users.controller";
+import { FollowsService, UsersService } from "./users.service";
 import * as config from 'config';
 
 const jwtConfig = config.get('jwt')
@@ -19,10 +19,10 @@ const jwtConfig = config.get('jwt')
           expiresIn: jwtConfig.expiresIn
         }
       }),
-      TypeOrmModule.forFeature([User]),
+      TypeOrmModule.forFeature([User, Follow]),
     ],
-    controllers: [UsersController],
-    providers: [UsersService, JwtStrategy],
+    controllers: [UsersController, FollowsController],
+    providers: [UsersService, JwtStrategy, FollowsService],
     exports: [JwtStrategy, PassportModule]
   })
   export class UsersModule {}
