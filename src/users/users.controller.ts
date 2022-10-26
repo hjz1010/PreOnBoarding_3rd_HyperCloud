@@ -1,6 +1,7 @@
 import { Body, Controller, Logger, Post, Req, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { CreateUserDto } from "./dto/create-user.dto";
+import { FollowDto } from "./dto/follow.dto";
 import { FollowsService, UsersService } from "./users.service";
 
 @Controller('users')
@@ -32,9 +33,9 @@ export class FollowsController {
     @Post()
     clickFollow(
         @Req() req,
-        @Body('email')  email: string
+        @Body() followDto: FollowDto
     ): Promise<string> {
-        this.logger.verbose(`User ${req.user.email} trying to follow/unfollow ${email}`)
-        return this.followService.followOrUnfollow(req.user, email)
+        this.logger.verbose(`User ${req.user.email} trying to follow/unfollow ${followDto.email}`)
+        return this.followService.followOrUnfollow(req.user, followDto.email)
     }
 }

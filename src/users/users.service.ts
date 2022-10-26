@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { Follow, User } from "./user.entity";
@@ -57,6 +57,15 @@ export class FollowsService {
 
     async followOrUnfollow(user: User, email: string): Promise<string>{
         const following = await this.userRepository.findOne({where: {email}})
+
+        if (!following) {
+            throw new NotFoundException('존재하지 않는 이메일입니다.')
+        } 
+        
+        if (following.id === user.id) {
+            throw new BadRequestException('자신을 팔로우할 수 없습니다.')
+        }
+
         const follow = await this.followRepository.findOne({where: {follower: user, following: following}})
 
         if (!follow) {
@@ -72,6 +81,5 @@ export class FollowsService {
 
             return Object.assign({message: 'UNFOLLOW SUCCESS'})
         }
-
     }
 }
