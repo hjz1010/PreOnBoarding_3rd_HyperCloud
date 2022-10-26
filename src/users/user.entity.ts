@@ -1,5 +1,5 @@
 import { Comment, Like, Posting } from "src/postings/posting.entity";
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User extends BaseEntity { 
@@ -20,4 +20,22 @@ export class User extends BaseEntity {
 
     @OneToMany(type => Like, like => like.user)
     likes: Like[];
+
+    @OneToMany(type => Follow, follow => follow.follower)
+    followings: Follow[];
+
+    @OneToMany(type => Follow, follow => follow.following)
+    followers: Follow[];
+}
+
+@Entity()
+export class Follow extends BaseEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @ManyToOne(type => User, user => user.followings)
+    follower: User;
+
+    @ManyToOne(type => User, user => user.followers)
+    following: User;
 }
