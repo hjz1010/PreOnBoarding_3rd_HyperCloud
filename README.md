@@ -1,73 +1,62 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Project
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+### 하이퍼클라우드 - 커뮤니티 어플리케이션 만들기 
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 1. 프로젝트 소개
 
-## Description
+- 유저들이 서로 친구를 맺고 글을 올릴 수 있는, 커뮤니티 앱을 만들기 위한 API
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- 유저들은 회원가입을 할 수 있으며, 그 뒤 로그인을 하여 친구를 맺을 수 있습니다.
 
-## Installation
+- 유저들은 글을 올릴 수 있으며 친구의 글에 답변을 달거나 “좋아요” 버튼을 클릭할 수 있습니다.
 
-```bash
-$ npm install
+## 2. 개발 기간 및 인원
+
+- **개발 기간** : 2022.10.17 - (진행중)
+
+- **인원** : 홍현진(백엔드)
+
+## 3. 프로젝트 실행 방법
 ```
+# 깃허브에서 레포지토리 클론받기
+$ git clone https://github.com/hjz1010/PreOnBoarding_3rd_HyperCloud.git
 
-## Running the app
+# 해당 디렉토리로 이동
+$ cd PreOnBoarding_3rd_HyperCloud
 
-```bash
-# development
-$ npm run start
+# 패키지 설치
+$ npm install
 
-# watch mode
+# 프로젝트 실행
 $ npm run start:dev
 
-# production mode
-$ npm run start:prod
+# server start : http://localhost:3000
 ```
 
-## Test
+## 4. 데이터 모델링
+▶️ [dbdiagram Link]()
 
-```bash
-# unit tests
-$ npm run test
+![image]()
 
-# e2e tests
-$ npm run test:e2e
+## 5. 구현 기능 설명
 
-# test coverage
-$ npm run test:cov
-```
+#### 1) 회원가입
+  - 
 
-## Support
+#### 2) 로그인 
+  -
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+#### 3) 게시글 작성, 수정, 삭제
+  -
+      
+#### 4) 게시글에 좋아요
+  - 
 
-## Stay in touch
+#### 5) 다른 회원 팔로우
+  - 
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## 6. API Docs
 
-## License
 
-Nest is [MIT licensed](LICENSE).
+
+
