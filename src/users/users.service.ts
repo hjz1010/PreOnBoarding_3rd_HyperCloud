@@ -5,6 +5,7 @@ import { Follow, User } from "./user.entity";
 import { FollowRepository, UserRepository } from "./user.repository";
 import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
+import { UpdatePasswordDto } from "./dto/update-password.dto";
 
 @Injectable()
 export class UsersService {
@@ -43,6 +44,24 @@ export class UsersService {
             throw new UnauthorizedException('아이디와 비밀번호를 확인해주세요.')
         }
     }
+  
+    async updatePassword(user: User, updatePasswordDto: UpdatePasswordDto): Promise <string> {
+        const { password, newPassword } = updatePasswordDto
+
+        // 비밀번호 재확인
+        if (! await bcrypt.compare(password, user.password)) {
+            throw new UnauthorizedException('비밀번호를 확인해주세요.')
+        }
+
+        const salt = await bcrypt.genSalt();
+        const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+        user.password = hashedNewPassword
+        await this.userRepository.save(user)
+        
+        return Object.assign({message : 'UPDATE SUCCESS'})
+    }
+
 }
 
 @Injectable()

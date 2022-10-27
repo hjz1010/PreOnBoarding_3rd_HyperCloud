@@ -2,22 +2,31 @@ import { Body, Controller, Logger, Post, Req, UseGuards, UsePipes, ValidationPip
 import { AuthGuard } from "@nestjs/passport";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { FollowDto } from "./dto/follow.dto";
+import { UpdatePasswordDto } from "./dto/update-password.dto";
 import { FollowsService, UsersService } from "./users.service";
 
 @Controller('users')
+@UsePipes(ValidationPipe)
 export class UsersController {
     constructor(private userService : UsersService) {}
 
     @Post('/signup')
-    @UsePipes(ValidationPipe)
     createUser(@Body() createUserDto: CreateUserDto): Promise <string> {
         return this.userService.createUser(createUserDto)
     }
 
     @Post('login')
-    @UsePipes(ValidationPipe)
     logIn(@Body() createUserDto: CreateUserDto): Promise <string> { //<{accessToken: string}>
         return this.userService.logIn(createUserDto)
+    }
+
+    @Post('/update/password')
+    @UseGuards(AuthGuard())
+    updatePassword(
+        @Req() req, 
+        @Body() updatePasswordDto: UpdatePasswordDto
+    ): Promise <string> {
+        return this.userService.updatePassword(req.user, updatePasswordDto)
     }
 }
 
