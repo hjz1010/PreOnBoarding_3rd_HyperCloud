@@ -1,16 +1,21 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { Follow, User } from "./user.entity";
-import { FollowRepository, UserRepository } from "./user.repository";
+import { Follow, Reason, User } from "./user.entity";
+import { FollowRepository, ReasonRepository, UserRepository } from "./user.repository";
 import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
+import { UpdatePasswordDto } from "./dto/update-password.dto";
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(User)
         private userRepository: UserRepository,
+
+        @InjectRepository(Reason)
+        private reasonRepository: ReasonRepository,
+
         private jwtService: JwtService
     ) {}
 
@@ -42,6 +47,35 @@ export class UsersService {
         } else {
             throw new UnauthorizedException('아이디와 비밀번호를 확인해주세요.')
         }
+    }
+
+    async updatePassword(user: User, updatePasswordDto: UpdatePasswordDto): Promise <string> {
+        const { password, newPassword } = updatePasswordDto
+
+        // 비밀번호 재확인
+        if (! await bcrypt.compare(password, user.password)) {
+            throw new UnauthorizedException('비밀번호를 확인해주세요.')
+        }
+
+        const salt = await bcrypt.genSalt();
+        const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+        user.password = hashedNewPassword
+        await this.userRepository.save(user)
+        
+        return Object.assign({message : 'UPDATE SUCCESS'})
+    }
+
+    async deleteUser(user: User, reason_id: number): Promise <string> {
+        // 해지 시 회원 정보를 삭제하지 않고 비식별화(isDeleted = true) + 해지사유 수집
+        const reason = await this.reasonRepository.findOne({where: {id: reason_id}})
+        user.isDeleted = true
+        user.reason = reason
+        await this.userRepository.save(user)
+        
+        // 게시글, 댓글, 팔로우, 좋아요- 는 어떻게 처리할까
+
+        return Object.assign({message : 'USER DELETED'})
     }
 }
 
