@@ -37,7 +37,6 @@ export class UsersController {
     ): Promise <string> {
         return this.userService.deleteUser(req.user, reason_id)
     }
-
 }
 
 @Controller('follows')
