@@ -7,6 +7,7 @@ import { Follow, Reason, User } from "./user.entity";
 import { FollowsController, UsersController } from "./users.controller";
 import { FollowsService, UsersService } from "./users.service";
 import * as config from 'config';
+import { Comment, Like, Posting } from "src/postings/posting.entity";
 
 const jwtConfig = config.get('jwt')
 
@@ -19,7 +20,7 @@ const jwtConfig = config.get('jwt')
           expiresIn: jwtConfig.expiresIn
         }
       }),
-      TypeOrmModule.forFeature([User, Follow, Reason]),
+      TypeOrmModule.forFeature([User, Follow, Reason, Posting, Comment, Like]),
     ],
     controllers: [UsersController, FollowsController],
     providers: [UsersService, JwtStrategy, FollowsService],

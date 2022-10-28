@@ -6,6 +6,8 @@ import { FollowRepository, ReasonRepository, UserRepository } from "./user.repos
 import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
+import { Comment, Like, Posting } from "src/postings/posting.entity";
+import { CommentRepository, likeRepository, PostingRepository } from "src/postings/posting.repository";
 
 @Injectable()
 export class UsersService {
@@ -15,6 +17,18 @@ export class UsersService {
 
         @InjectRepository(Reason)
         private reasonRepository: ReasonRepository,
+
+        @InjectRepository(Posting)
+        private postingRepository: PostingRepository,
+
+        @InjectRepository(Follow)
+        private followRepository: FollowRepository,
+
+        @InjectRepository(Comment)
+        private commentRepository: CommentRepository,
+
+        @InjectRepository(Like)
+        private likeRepository: likeRepository,
 
         private jwtService: JwtService
     ) {}
@@ -38,6 +52,10 @@ export class UsersService {
     async logIn(createUserDto: CreateUserDto): Promise <string> { //<{accessToken: string}>
         const { email, password } = createUserDto
         const user = await this.userRepository.findOne({ email })
+
+        if (user.isDeleted) {
+            throw new NotFoundException('삭제된 계정입니다.')
+        }
 
         if (user && await bcrypt.compare(password, user.password)) {
             const payload = { email }
@@ -73,8 +91,34 @@ export class UsersService {
         user.reason = reason
         await this.userRepository.save(user)
         
-        // 게시글, 댓글, 팔로우, 좋아요- 는 어떻게 처리할까
+        // 게시글, 댓글, 팔로우, 좋아요- 는 어떻게 처리할까 
+        // 삭제? 이것도 비식별화? 정보를 남겨놓아야 할 이유가 없다고 판단되므로 삭제하자
+        // 게시글과 팔로우는 삭제, 댓글과 좋아요는 유저만 *처리
 
+        const comments = await this.commentRepository.find({user})
+        for (let i = 0; i < comments.length; i++) {
+            let comment = comments[i]
+            comment.user = null
+            this.commentRepository.save(comment)
+        }
+
+        const likes = await this.likeRepository.find({user})
+        for (let i = 0; i < likes.length; i++) {
+            let like = likes[i]
+            like.user = null
+            this.likeRepository.save(like)
+        }
+
+        const postings: Posting[] = await this.postingRepository.find({where: { user: user}})
+        for (let i = 0; i < postings.length; i++ ) {
+            let posting = postings[i]
+            await this.commentRepository.delete({posting : posting})
+        }
+
+        await this.postingRepository.delete({user : user})
+        await this.followRepository.delete({follower : user})
+        await this.followRepository.delete({following : user})
+        
         return Object.assign({message : 'USER DELETED'})
     }
 }
