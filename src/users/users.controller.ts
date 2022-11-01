@@ -15,7 +15,7 @@ export class UsersController {
         return this.userService.createUser(createUserDto)
     }
 
-    @Post('login')
+    @Post('/login')
     logIn(@Body() createUserDto: CreateUserDto): Promise <string> { //<{accessToken: string}>
         return this.userService.logIn(createUserDto)
     }
@@ -27,6 +27,15 @@ export class UsersController {
         @Body() updatePasswordDto: UpdatePasswordDto
     ): Promise <string> {
         return this.userService.updatePassword(req.user, updatePasswordDto)
+    }
+
+    @Post('/terminate')
+    @UseGuards(AuthGuard())
+    deleteUser(
+        @Req() req,
+        @Body('reason_id') reason_id: number 
+    ): Promise <string> {
+        return this.userService.deleteUser(req.user, reason_id)
     }
 }
 

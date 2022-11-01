@@ -2,6 +2,18 @@ import { Comment, Like, Posting } from "src/postings/posting.entity";
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
+export class Reason extends BaseEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    description: string;
+
+    @ManyToOne(type => User, user => user.reason)
+    users: User[] 
+}
+
+@Entity()
 export class User extends BaseEntity { 
     @PrimaryGeneratedColumn()
     id: number;
@@ -26,6 +38,12 @@ export class User extends BaseEntity {
 
     @OneToMany(type => Follow, follow => follow.following)
     followers: Follow[];
+
+    @Column({default : false})
+    isDeleted: boolean;
+
+    @ManyToOne(type => Reason, reason => reason.users)
+    reason: Reason;
 }
 
 @Entity()
