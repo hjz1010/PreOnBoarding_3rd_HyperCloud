@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
-import { Comment, Like, Posting } from './posting.entity';
-import { CommentRepository, likeRepository, PostingRepository } from './posting.repository';
+import { Comment, Emoticon, Like, Posting } from './posting.entity';
+import { CommentRepository, EmoticonRepository, LikeRepository, PostingRepository } from './posting.repository';
 
 @Injectable()
 export class PostingsService {
@@ -82,14 +82,17 @@ export class commentsService {
 export class LikesServices  {
     constructor(
         @InjectRepository(Like)
-        private likeRepository: likeRepository,
+        private likeRepository: LikeRepository,
 
         @InjectRepository(Posting)
         private postingRepository: PostingRepository,
         // private postingService: PostingsService,
+
+        @InjectRepository(Emoticon)
+        private emoticonRepository: EmoticonRepository,
     ) {}
 
-    async createOrDeleteLike(posting_id: string, user: User): Promise<string> {
+    async createOrDeleteLike(posting_id: string, user: User, emoticon_id: string): Promise<string> {
         // const posting = await this.postingService.getPostingById(posting_id, user) // 이건 본인 게시글만 가져올 수 있는 메소드라서 안 됨
         const posting = await this.postingRepository.findOne({where : {id: posting_id}})
 
@@ -100,9 +103,11 @@ export class LikesServices  {
         const like = await this.likeRepository.findOne({where: {posting: posting, user: user}})
 
         if (!like) {
+            const emoticon = await this.emoticonRepository.findOne(emoticon_id)
             const createLike = this.likeRepository.create({
                 posting,
-                user
+                user,
+                emoticon
             })
             await this.likeRepository.save(createLike)
             return Object.assign({message: 'LIKE SUCCESS'})

@@ -1,5 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { Comment, Like, Posting } from "src/postings/posting.entity";
+import { Comment, Emoticon, Like, Posting } from "src/postings/posting.entity";
 import { Follow, Reason, User } from "src/users/user.entity";
 import * as config from 'config';
 
@@ -13,7 +13,7 @@ export const typeORMconfig : TypeOrmModuleOptions = {
         "username": process.env.RDS_USERNAME || dbConfig.username,
         "password": process.env.RDS_PASSWORD || dbConfig.password,
         "database": process.env.RDS_DB_NAME || dbConfig.database,
-        "entities": [User, Posting, Comment, Like, Follow, Reason], 
+        "entities": [User, Posting, Comment, Like, Follow, Reason, Emoticon], 
         // "entities" : [__dirname + '/../**/*.entity.{js.ts}'], // 이건 왜 안되지 ㅠㅠ
         "synchronize": dbConfig.synchronize
 }

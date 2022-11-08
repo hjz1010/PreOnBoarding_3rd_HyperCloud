@@ -82,12 +82,13 @@ export class LikesController {
         private likeService: LikesServices
     ) {}
 
-    @Post('/:posting_id')
+    @Post('/:posting_id/:emoticon_id')
     async clickLike(
         @Param('posting_id') posting_id: string,
+        @Param('emoticon_id') emoticon_id: string,
         @Req() req
     ): Promise<string> {
         this.logger.verbose(`User ${req.user.email} clicking LIKE on the posting of #${posting_id}.`)
-        return this.likeService.createOrDeleteLike(posting_id, req.user)
+        return this.likeService.createOrDeleteLike(posting_id, req.user, emoticon_id)
     }
 }

@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from "typeorm";
-import { Comment, Like, Posting } from "./posting.entity";
+import { Comment, Emoticon, Like, Posting } from "./posting.entity";
 
 @EntityRepository(Posting)
 export class PostingRepository extends Repository<Posting> {
@@ -12,6 +12,9 @@ export class CommentRepository extends Repository<Comment> {
 }
 
 @EntityRepository(Like)
-export class likeRepository extends Repository<Like> {
+export class LikeRepository extends Repository<Like> {
     
 }
+
+@EntityRepository(Emoticon)
+export class EmoticonRepository extends Repository<Emoticon> {}
