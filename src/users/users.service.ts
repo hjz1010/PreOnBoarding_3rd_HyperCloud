@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
 import { Comment, Like, Posting } from "src/postings/posting.entity";
-import { CommentRepository, likeRepository, PostingRepository } from "src/postings/posting.repository";
+import { CommentRepository, LikeRepository, PostingRepository } from "src/postings/posting.repository";
 import { Connection } from "typeorm";
 
 @Injectable()
@@ -29,7 +29,7 @@ export class UsersService {
         private commentRepository: CommentRepository,
 
         @InjectRepository(Like)
-        private likeRepository: likeRepository,
+        private likeRepository: LikeRepository,
 
         private jwtService: JwtService,
         private connection: Connection
