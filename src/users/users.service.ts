@@ -6,8 +6,8 @@ import { FollowRepository, ReasonRepository, UserRepository } from "./user.repos
 import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
-import { Comment, Like, Posting } from "src/postings/posting.entity";
-import { CommentRepository, LikeRepository, PostingRepository } from "src/postings/posting.repository";
+import { Comment, Reaction, Posting } from "src/postings/posting.entity";
+import { CommentRepository, ReactionRepository, PostingRepository } from "src/postings/posting.repository";
 import { Connection } from "typeorm";
 
 @Injectable()
@@ -28,8 +28,8 @@ export class UsersService {
         @InjectRepository(Comment)
         private commentRepository: CommentRepository,
 
-        @InjectRepository(Like)
-        private likeRepository: LikeRepository,
+        @InjectRepository(Reaction)
+        private reactionRepository: ReactionRepository,
 
         private jwtService: JwtService,
         private connection: Connection
@@ -111,12 +111,12 @@ export class UsersService {
                 await queryRunner.manager.save(comment)
             }
     
-            const likes = await this.likeRepository.find({user})
-            for (let i = 0; i < likes.length; i++) {
-                let like = likes[i]
-                like.user = null
-                // this.likeRepository.save(like)
-                await queryRunner.manager.save(like)
+            const reactions = await this.reactionRepository.find({user})
+            for (let i = 0; i < reactions.length; i++) {
+                let reaction = reactions[i]
+                reaction.user = null
+                // this.reactionRepository.save(reaction)
+                await queryRunner.manager.save(reaction)
             }
 
             const postings: Posting[] = await this.postingRepository.find({where: { user: user}})
@@ -124,9 +124,9 @@ export class UsersService {
                 let posting = postings[i]
                 
                 // await this.commentRepository.delete({posting : posting})
-                // await this.likeRepository.delete({posting: posting})
+                // await this.reactionRepository.delete({posting: posting})
                 await queryRunner.manager.delete(Comment, {posting: posting})
-                await queryRunner.manager.delete(Like, {posting: posting})
+                await queryRunner.manager.delete(Reaction, {posting: posting})
             }
 
             // await this.postingRepository.delete({user: user})

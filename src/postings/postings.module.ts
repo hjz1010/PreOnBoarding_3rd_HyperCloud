@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Comment, Emoticon, Like, Posting } from './posting.entity';
-import { CommentsController, LikesController, PostingsController } from './postings.controller';
-import { commentsService, LikesServices, PostingsService } from './postings.service';
+import { Comment, Emoticon, Posting, Reaction, State } from './posting.entity';
+import { CommentsController, ReactionsController, PostingsController } from './postings.controller';
+import { commentsService, ReactionsServices, PostingsService } from './postings.service';
 import * as config from 'config';
 
 const jwtConfig = config.get('jwt')
@@ -18,9 +18,9 @@ const jwtConfig = config.get('jwt')
         expiresIn: jwtConfig.expiresIn
       }
     }),
-    TypeOrmModule.forFeature([Posting, Comment, Like, Emoticon]),
+    TypeOrmModule.forFeature([Posting, Comment, Reaction, Emoticon, State]),
   ],
-  controllers: [PostingsController, CommentsController, LikesController],
-  providers: [PostingsService, commentsService, LikesServices], 
+  controllers: [PostingsController, CommentsController, ReactionsController],
+  providers: [PostingsService, commentsService, ReactionsServices], 
 })
 export class PostingsModule {}
