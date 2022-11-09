@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Logger, Param, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateCommentDto, CreatePostingDto } from './dto/create-posting.dto';
-import { Comment, Like, Posting } from './posting.entity';
-import { commentsService, LikesServices, PostingsService } from './postings.service';
+import { Comment, Posting } from './posting.entity';
+import { commentsService, PostingsService, ReactionsServices } from './postings.service';
 
 
 @Controller('postings')
@@ -73,22 +73,22 @@ export class CommentsController {
     }
 }
 
-@Controller('likes')
+@Controller('reactions')
 @UsePipes(ValidationPipe)
 @UseGuards(AuthGuard())
-export class LikesController {
-    private logger = new Logger('Like')
+export class ReactionsController {
+    private logger = new Logger('Reaction')
     constructor(
-        private likeService: LikesServices
+        private reactionService: ReactionsServices
     ) {}
 
     @Post('/:posting_id/:emoticon_id')
-    async clickLike(
+    async clickReaction(
         @Param('posting_id') posting_id: string,
         @Param('emoticon_id') emoticon_id: string,
         @Req() req
     ): Promise<string> {
-        this.logger.verbose(`User ${req.user.email} clicking LIKE on the posting of #${posting_id}.`)
-        return this.likeService.createOrDeleteLike(posting_id, req.user, emoticon_id)
+        this.logger.verbose(`User ${req.user.email} clicking REACTION on the posting of #${posting_id}.`)
+        return this.reactionService.createOrDeleteReaction(posting_id, req.user, emoticon_id)
     }
 }

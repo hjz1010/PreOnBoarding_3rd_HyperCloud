@@ -1,4 +1,4 @@
-import { Comment, Like, Posting } from "src/postings/posting.entity";
+import { Comment, Posting } from "src/postings/posting.entity";
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -9,7 +9,7 @@ export class Reason extends BaseEntity {
     @Column()
     description: string;
 
-    @ManyToOne(type => User, user => user.reason)
+    @OneToMany(type => User, user => user.reason)
     users: User[] 
 }
 
@@ -30,8 +30,8 @@ export class User extends BaseEntity {
     @OneToMany(type => Comment, comment => comment.user)
     comments: Comment[];
 
-    @OneToMany(type => Like, like => like.user)
-    likes: Like[];
+    @OneToMany(type => Reason, reason => reason.users)
+    reactions: Reason[];
 
     @OneToMany(type => Follow, follow => follow.follower)
     followings: Follow[];
@@ -56,4 +56,7 @@ export class Follow extends BaseEntity {
 
     @ManyToOne(type => User, user => user.followers)
     following: User;
+
+    @Column({default : false})
+    isBlocked: boolean;
 }
