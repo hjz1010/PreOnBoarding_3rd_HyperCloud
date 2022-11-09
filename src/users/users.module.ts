@@ -4,8 +4,8 @@ import { PassportModule } from "@nestjs/passport";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { JwtStrategy } from "./jwt.strategy";
 import { Follow, Reason, User } from "./user.entity";
-import { FollowsController, UsersController } from "./users.controller";
-import { FollowsService, UsersService } from "./users.service";
+import { BlocksController, FollowsController, UsersController } from "./users.controller";
+import { BlocksService, FollowsService, UsersService } from "./users.service";
 import * as config from 'config';
 import { Comment, Posting, Reaction } from "src/postings/posting.entity";
 
@@ -22,8 +22,8 @@ const jwtConfig = config.get('jwt')
       }),
       TypeOrmModule.forFeature([User, Follow, Reason, Posting, Comment, Reaction]),
     ],
-    controllers: [UsersController, FollowsController],
-    providers: [UsersService, JwtStrategy, FollowsService],
+    controllers: [UsersController, FollowsController, BlocksController],
+    providers: [UsersService, JwtStrategy, FollowsService, BlocksService],
     exports: [JwtStrategy, PassportModule]
   })
   export class UsersModule {}

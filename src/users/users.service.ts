@@ -185,10 +185,42 @@ export class FollowsService {
             this.followRepository.save(newFollow)
             return Object.assign({message: 'FOLLOW SUCCESS'})
 
+        } else if (!!follow.isBlocked) {
+            return Object.assign({message: 'BLOCKED FOLLOW'})
+
         } else {
             this.followRepository.delete(follow)
 
             return Object.assign({message: 'UNFOLLOW SUCCESS'})
         }
+    }
+}
+
+@Injectable()
+export class BlocksService {
+    constructor(
+        @InjectRepository(Follow)
+        private followRepository: FollowRepository,
+
+        @InjectRepository(User)
+        private userRepository: UserRepository,
+    ) {}
+
+    async blockFollow(user: User, email: string) {
+        const follower = await this.userRepository.findOne({where: {email}})
+        let block = await this.followRepository.findOne({where: {following: user, follower: follower}}) 
+
+        if (!block) {
+            block = this.followRepository.create({
+                following: user,
+                follower: follower,
+                isBlocked: true
+            })
+        } else {
+            block.isBlocked = true
+        }
+
+        this.followRepository.save(block)
+        return Object.assign({message: 'BLOCK SUCCESS'})
     }
 }

@@ -1,27 +1,33 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
-import { Comment, Emoticon, Reaction, Posting } from './posting.entity';
-import { CommentRepository, EmoticonRepository, ReactionRepository, PostingRepository } from './posting.repository';
+import { CreatePostingDto } from './dto/create-posting.dto';
+import { Comment, Emoticon, Reaction, Posting, State } from './posting.entity';
+import { CommentRepository, EmoticonRepository, ReactionRepository, PostingRepository, StateRepository } from './posting.repository';
 
 @Injectable()
 export class PostingsService {
     constructor(
         @InjectRepository(Posting)
         private postingRepository: PostingRepository,
+
+        @InjectRepository(State)
+        private stateRepository: StateRepository,
     ) {}
 
-    async createPosting(content: string, user: User): Promise<Posting> {
+    async createPosting(content: string, state_id: number, user: User): Promise<Posting> {
+        const state = await this.stateRepository.findOne(state_id)
         const posting = this.postingRepository.create({
             content,
-            user
+            state,
+            user,
         })
         await this.postingRepository.save(posting)
 
         return Object.assign({message: 'POSTING SUCCESS', posting: {posting_id: posting.id, email: user.email, content: content}})
     }
 
-    async getAllPostings(user: User): Promise<any> {
+    async getAllPostings(user: User): Promise<Posting[]> {
         const postings = await this.postingRepository.find({ where: { user: user}})
         return postings
     }
@@ -29,15 +35,16 @@ export class PostingsService {
     async getPostingById(posting_id: string, user: User): Promise<Posting> {
         const posting = await this.postingRepository.findOne({ where: { id: posting_id }})
 
-        if (posting.user.id !== user.id) {
-            throw new UnauthorizedException();
-        }
+        // if (posting.user.id !== user.id) {
+        //     throw new UnauthorizedException();
+        // }
         return posting
     }
     
-    async updatePosting(posting_id: string, content: string, user: User): Promise<Posting> {
+    async updatePosting(posting_id: string, createCommentDto: CreatePostingDto, user: User): Promise<Posting> {
         const posting = await this.getPostingById(posting_id, user)
-        posting.content = content;
+        posting.content = createCommentDto.content;
+        posting.state = await this.stateRepository.findOne(createCommentDto.state_id)
         await this.postingRepository.save(posting)
 
         return Object.assign({message: 'UPDATE SUCCESS', posting: {posting_id: posting.id, email: user.email, content: posting.content}})
@@ -93,7 +100,8 @@ export class ReactionsServices  {
     ) {}
 
     async createOrDeleteReaction(posting_id: string, user: User, emoticon_id: string): Promise<string> {
-        // const posting = await this.postingService.getPostingById(posting_id, user) // 이건 본인 게시글만 가져올 수 있는 메소드라서 안 됨
+        // const posting = await this.postingService.getPostingById(posting_id, user) 
+                                // TypeError: this.postingService.getPostingById is not a function
         const posting = await this.postingRepository.findOne({where : {id: posting_id}})
 
         if (!posting) {
