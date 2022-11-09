@@ -19,13 +19,13 @@ export class PostingsController {
     ): Promise<Posting> {
         this.logger.verbose(`User ${req.user.email} creating a new posting.
                             Payload: ${JSON.stringify(createPosting)}`)
-        return this.postingService.createPosting(createPosting.content, req.user)
+        return this.postingService.createPosting(createPosting.content, createPosting.state_id, req.user)
     } 
 
     @Get()
     getPosting(
         @Req() req,
-    ): Promise<Posting> {
+    ): Promise<Posting[]> {
         this.logger.verbose(`User ${req.user.email} trying to get all postings.`)
         return this.postingService.getAllPostings(req.user)
     }
@@ -38,7 +38,7 @@ export class PostingsController {
     ): Promise<Posting> {
         this.logger.verbose(`User ${req.user.email} trying to update the posting of #${posting_id}.
                             Payload: ${JSON.stringify(createPosting)} `)
-        return this.postingService.updatePosting(posting_id, createPosting.content, req.user)
+        return this.postingService.updatePosting(posting_id, createPosting, req.user)
     }
 
     @Delete('/:posting_id/delete')
@@ -88,7 +88,7 @@ export class ReactionsController {
         @Param('emoticon_id') emoticon_id: string,
         @Req() req
     ): Promise<string> {
-        this.logger.verbose(`User ${req.user.email} clicking REACTION on the posting of #${posting_id}.`)
+        this.logger.verbose(`User ${req.user.email} clicking REACTION${emoticon_id} on the posting of #${posting_id}.`)
         return this.reactionService.createOrDeleteReaction(posting_id, req.user, emoticon_id)
     }
 }

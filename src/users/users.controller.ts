@@ -3,7 +3,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { FollowDto } from "./dto/follow.dto";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
-import { FollowsService, UsersService } from "./users.service";
+import { BlocksService, FollowsService, UsersService } from "./users.service";
 
 @Controller('users')
 @UsePipes(ValidationPipe)
@@ -55,5 +55,22 @@ export class FollowsController {
     ): Promise<string> {
         this.logger.verbose(`User ${req.user.email} trying to follow/unfollow ${followDto.email}`)
         return this.followService.followOrUnfollow(req.user, followDto.email)
+    }
+}
+
+@Controller('block')
+@UsePipes(ValidationPipe)
+@UseGuards(AuthGuard())
+export class BlocksController {
+    constructor(
+        private blockService: BlocksService,
+    ) {}
+
+    @Post()
+    blockFollow(
+        @Req() req,
+        @Body('email') email: string,
+    ): Promise<string> {
+        return this.blockService.blockFollow(req.user, email)
     }
 }
