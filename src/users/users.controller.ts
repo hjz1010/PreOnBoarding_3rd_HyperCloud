@@ -3,6 +3,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { FollowDto } from "./dto/follow.dto";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
+import { User } from "./user.entity";
 import { BlocksService, FollowsService, UsersService } from "./users.service";
 
 @Controller('users')
@@ -36,6 +37,14 @@ export class UsersController {
         @Body('reason_id') reason_id: number 
     ): Promise <string> {
         return this.userService.deleteUser(req.user, reason_id)
+    }
+
+    @Post('/search')
+    @UseGuards(AuthGuard())
+    searchUser(
+        @Body('part_of_email') part_of_email: string
+    ): Promise <User[]> {
+        return this.userService.searchUserByEmail(part_of_email)
     }
 }
 

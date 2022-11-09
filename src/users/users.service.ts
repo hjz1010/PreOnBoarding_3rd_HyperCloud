@@ -8,7 +8,7 @@ import { JwtService } from "@nestjs/jwt";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
 import { Comment, Reaction, Posting } from "src/postings/posting.entity";
 import { CommentRepository, ReactionRepository, PostingRepository } from "src/postings/posting.repository";
-import { Connection } from "typeorm";
+import { Connection, Like } from "typeorm";
 
 @Injectable()
 export class UsersService {
@@ -151,6 +151,17 @@ export class UsersService {
         } finally { // 직접 생성한 QueryRunner는 해제시켜 주어야 함
             await queryRunner.release();
         }
+    }
+
+    async searchUserByEmail(part_of_email: string) {
+        const users = this.userRepository.find({
+            select: ['email'],
+            where: {
+                email: Like(`%${part_of_email}%`)
+            }
+        })
+
+        return users
     }
 }
 
