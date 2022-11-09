@@ -34,9 +34,9 @@ $ npm run start:dev
 ```
 
 ## 4. 데이터 모델링
-▶️ [dbdiagram Link]()
+▶️ [dbdiagram Link](https://dbdiagram.io/d/636a41b1c9abfc6111711007)
 
-![image]()
+![image](https://user-images.githubusercontent.com/105548720/200741945-1144a8a9-9c70-4269-b395-6084166fd1ae.png)
 
 ## 5. 구현 기능 설명
 
